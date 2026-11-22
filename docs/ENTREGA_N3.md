@@ -38,10 +38,11 @@ O emulador não exige acesso à conta Google. Os testes de recusa geram mensagen
 
 ## Pendências que exigem a conta do responsável
 
+O código está publicado na branch `main` de [Vnn7/falacidade](https://github.com/Vnn7/falacidade).
+
 - Criar/configurar Firebase real, ativar provedores e publicar regras/índice.
 - Preencher o `.env` local com o app cadastrado.
 - Validar login, GPS, pelo menos dois reportes e pinos no aparelho real.
-- Publicar os commits no GitHub com acesso de escrita à conta **Vnn7**.
 - Conferir o link público com os commits e preencher o formulário com nome completo e link.
 
 O código contém comentários explicativos. Antes de entregar, leia os comentários e ajuste o texto ao que você compreendeu, como pede a avaliação. Os extras foram implementados; a nota depende da avaliação do professor.

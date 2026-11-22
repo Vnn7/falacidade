@@ -3,6 +3,8 @@
 Aplicativo de participação cidadã em **React Native, Expo SDK 54, Expo Router e Firebase**.
 Implementa os desafios de gravar e listar reportes e os extras propostos nos PDFs da avaliação.
 
+**Repositório da entrega:** [Vnn7/falacidade](https://github.com/Vnn7/falacidade).
+
 Desenvolvido sobre o repositório [Vnn7/FalaBuraco-Mar](https://github.com/Vnn7/FalaBuraco-Mar), preservando a identidade visual do projeto original.
 
 ## O que foi implementado
