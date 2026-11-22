@@ -25,6 +25,10 @@ Foram conferidos:
 
 O provedor Google está habilitado no projeto. O teste automatizado acima usou e-mail/senha; o titular também confirmou o login Google no navegador, com abertura do mapa e carregamento dos dois reportes.
 
-O mapa nativo foi incluído e empacotado para Android. O navegador mostra a lista e informa que o mapa está disponível no Android/iOS; esse teste não substitui a conferência dos pinos e do GPS em um aparelho real.
+Em **22/11/2026**, o responsável também abriu o aplicativo em seu Xiaomi físico com Expo Go compatível com SDK 54. A captura enviada confirmou o mapa Google com ruas, a posição atual indicada em azul, o nome da cidade obtido pela localização e a contagem dos dois reportes do Firestore no modo visitante.
+
+Os reportes de demonstração ficam nas coordenadas simuladas de Cuiabá; eles não aparecem no trecho do mapa de outra cidade. A visualização de um pino e o envio no Android ainda precisam ser conferidos. O teste no aparelho foi acompanhado pelo responsável; não é um resultado de emulador. A captura com a localização pessoal não foi publicada.
+
+O navegador mostra a lista e informa que o mapa está disponível no Android/iOS. Não foi realizado teste em iOS.
 
 As credenciais da conta de demonstração, o `.env`, os tokens do CLI e a configuração administrativa não são incluídos no repositório.
