@@ -23,7 +23,7 @@ Foram conferidos:
 
 ![Lista usando o Firebase real](imagens/lista-firebase-real.png)
 
-O provedor Google também está habilitado no projeto. O teste automatizado acima usou e-mail/senha; a autenticação Google depende da interação do titular da conta.
+O provedor Google está habilitado no projeto. O teste automatizado acima usou e-mail/senha; o titular também confirmou o login Google no navegador, com abertura do mapa e carregamento dos dois reportes.
 
 O mapa nativo foi incluído e empacotado para Android. O navegador mostra a lista e informa que o mapa está disponível no Android/iOS; esse teste não substitui a conferência dos pinos e do GPS em um aparelho real.
 

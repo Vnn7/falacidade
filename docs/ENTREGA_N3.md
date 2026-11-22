@@ -44,7 +44,7 @@ O código está publicado na branch `main` de [Vnn7/falacidade](https://github.c
 O Firebase `falacidade-vnn7-n3` e o Firestore de São Paulo estão criados, com regras/índice publicados. Google e e-mail/senha estão habilitados. O `.env` local está preenchido e dois reportes de demonstração foram gravados pelo próprio aplicativo na nuvem.
 
 - Ao clonar em outro computador, preencher o `.env` com o app cadastrado.
-- Conferir o login Google com a conta do responsável e os pinos/GPS no aparelho real. O teste automatizado da nuvem usou e-mail e GPS fornecido pelo navegador de teste.
+- Conferir os pinos/GPS no aparelho real. O login Google foi confirmado pelo responsável no navegador; o teste automatizado da nuvem usou e-mail e GPS fornecido pelo navegador de teste.
 - Conferir o link público com os commits e preencher o formulário com nome completo e link.
 
 O código contém comentários explicativos. Antes de entregar, leia os comentários e ajuste o texto ao que você compreendeu, como pede a avaliação. Os extras foram implementados; a nota depende da avaliação do professor.
