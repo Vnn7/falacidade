@@ -40,8 +40,10 @@ O emulador não exige acesso à conta Google. Os testes de recusa geram mensagen
 
 O código está publicado na branch `main` de [Vnn7/falacidade](https://github.com/Vnn7/falacidade).
 
-- Criar/configurar Firebase real, ativar provedores e publicar regras/índice.
-- Preencher o `.env` local com o app cadastrado.
+O Firebase `falacidade-vnn7-n3` e o Firestore de São Paulo estão criados, com regras/índice publicados. O `.env` local já está preenchido e a leitura pública do banco real foi verificada.
+
+- Ativar Authentication no console e os provedores de login (o acesso ao console exige verificação em duas etapas da conta Google).
+- Ao clonar em outro computador, preencher o `.env` com o app cadastrado.
 - Validar login, GPS, pelo menos dois reportes e pinos no aparelho real.
 - Conferir o link público com os commits e preencher o formulário com nome completo e link.
 

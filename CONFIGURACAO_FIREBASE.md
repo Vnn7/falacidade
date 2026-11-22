@@ -2,6 +2,8 @@
 
 Esta configuração precisa ser feita na conta Google do responsável. Não envie senhas, tokens administrativos ou chaves de service account para o repositório.
 
+**Estado desta entrega:** o projeto `falacidade-vnn7-n3`, o aplicativo Web, o Firestore em `southamerica-east1` e as regras/índice já foram criados. O `.env` local já foi preenchido. Continue pela ativação de **Authentication** no console; as instruções de criação abaixo servem para reproduzir a configuração em outro projeto.
+
 ## 1. Criar projeto, aplicativo e banco
 
 1. Acesse [Firebase Console](https://console.firebase.google.com/) e crie um projeto para o Falaa Buraco. Analytics é opcional.
