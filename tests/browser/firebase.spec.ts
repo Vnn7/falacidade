@@ -9,6 +9,8 @@ test('conta real no emulador cria dois reportes, atualiza ao voltar e lista por 
   await page.getByLabel('Senha', { exact: true }).fill('senha-local-123');
   await page.getByText('Criar conta', { exact: true }).click();
   await expect(page.getByText('Cada reporte faz a diferença')).toBeVisible({ timeout: 15000 });
+  // Reabrir o app precisa restaurar a sessão antes de permitir o envio.
+  await page.reload();
   await expect(page.getByText('Buscando sua localização...')).not.toBeVisible();
 
   for (const titulo of ['Primeiro reporte do teste', 'Segundo reporte do teste']) {
@@ -16,7 +18,7 @@ test('conta real no emulador cria dois reportes, atualiza ao voltar e lista por 
     await page.getByLabel('Título do reporte').fill(titulo);
     await page.getByLabel('Descrição do reporte').fill('Descrição criada pelo teste automatizado.');
     await page.getByText('Iluminação', { exact: true }).click();
-    await page.getByText('Enviar reporte', { exact: true }).click();
+    await page.getByRole('button', { name: 'Enviar reporte', exact: true }).click();
     await expect(page.getByText('Reporte enviado!', { exact: true })).toBeVisible({ timeout: 15000 });
     await page.getByText('Voltar ao mapa', { exact: true }).click();
   }

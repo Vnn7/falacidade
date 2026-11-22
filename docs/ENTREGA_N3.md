@@ -33,6 +33,7 @@ A rota antiga `/reporte` redireciona o código para o mesmo formulário novo. O 
 - 2 testes no navegador: navegação visitante e recusa de envio sem título/login.
 - 1 teste completo no navegador com Authentication e Firestore emulados: criação de conta, dois reportes, persistência, ordenação, filtro e detalhe.
 - Empacotamento para web e Android.
+- Validação pelo aplicativo com o Firebase real: criação de conta por e-mail, dois reportes, sessão após recarregar, ordenação, filtro, atualização e detalhe. [Evidência](VALIDACAO_FIREBASE_REAL.md).
 
 O emulador não exige acesso à conta Google. Os testes de recusa geram mensagens `PERMISSION_DENIED` esperadas; a execução deve terminar com todos os testes aprovados.
 
@@ -40,11 +41,10 @@ O emulador não exige acesso à conta Google. Os testes de recusa geram mensagen
 
 O código está publicado na branch `main` de [Vnn7/falacidade](https://github.com/Vnn7/falacidade).
 
-O Firebase `falacidade-vnn7-n3` e o Firestore de São Paulo estão criados, com regras/índice publicados. O `.env` local já está preenchido e a leitura pública do banco real foi verificada.
+O Firebase `falacidade-vnn7-n3` e o Firestore de São Paulo estão criados, com regras/índice publicados. Google e e-mail/senha estão habilitados. O `.env` local está preenchido e dois reportes de demonstração foram gravados pelo próprio aplicativo na nuvem.
 
-- Ativar Authentication no console e os provedores de login (o acesso ao console exige verificação em duas etapas da conta Google).
 - Ao clonar em outro computador, preencher o `.env` com o app cadastrado.
-- Validar login, GPS, pelo menos dois reportes e pinos no aparelho real.
+- Conferir o login Google com a conta do responsável e os pinos/GPS no aparelho real. O teste automatizado da nuvem usou e-mail e GPS fornecido pelo navegador de teste.
 - Conferir o link público com os commits e preencher o formulário com nome completo e link.
 
 O código contém comentários explicativos. Antes de entregar, leia os comentários e ajuste o texto ao que você compreendeu, como pede a avaliação. Os extras foram implementados; a nota depende da avaliação do professor.

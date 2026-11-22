@@ -14,7 +14,7 @@ import { mensagemDoErro } from '@/services/erros';
 import type { TipoReporte } from '@/types/ocorrencia';
 
 export default function NovoReporte() {
-  const { user } = useAuth();
+  const { user, pronto } = useAuth();
   const { coordenadas, status, atualizar } = useCidade();
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
@@ -26,7 +26,7 @@ export default function NovoReporte() {
   const bloqueado = useRef(false);
 
   async function enviar() {
-    if (bloqueado.current || enviado) return;
+    if (!pronto || bloqueado.current || enviado) return;
     setErro(null);
     if (!titulo.trim()) { setErro('Título obrigatório. Diga onde está o problema.'); return; }
     if (!user) { setErro('Login necessário. Entre na sua conta para reportar.'); return; }
@@ -68,7 +68,11 @@ export default function NovoReporte() {
           <Button title="Voltar ao mapa" onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)/mapa')} />
         </> : <>
           <Text style={styles.texto}>Descreva o problema. Vamos usar a posição atual do seu aparelho.</Text>
-          {!user && <View style={styles.aviso}><Text style={styles.texto}>Entre para enviar um reporte.</Text>
+          {!pronto && <View style={styles.aviso}>
+            <ActivityIndicator accessibilityLabel="Verificando sessão" color={Colors.green} />
+            <Text style={styles.texto}>Verificando sua sessão...</Text>
+          </View>}
+          {pronto && !user && <View style={styles.aviso}><Text style={styles.texto}>Entre para enviar um reporte.</Text>
             <Button title="Ir para o login" outline onPress={() => router.push('/(tabs)')} /></View>}
           <SectionTitle>Título obrigatório</SectionTitle>
           <TextInput accessibilityLabel="Título do reporte" placeholder="Ex.: Buraco na Rua das Palmeiras"
@@ -88,7 +92,7 @@ export default function NovoReporte() {
           {!coordenadas && <Button title="Buscar localização" outline disabled={enviando || status === 'carregando'} onPress={() => void atualizar()} />}
           {erro && <Text accessibilityRole="alert" style={styles.erro}>{erro}</Text>}
           {enviando && <ActivityIndicator accessibilityLabel="Enviando reporte" color={Colors.green} />}
-          <Button title={enviando ? 'Enviando...' : 'Enviar reporte'} disabled={enviando} onPress={() => void enviar()} />
+          <Button title={enviando ? 'Enviando...' : 'Enviar reporte'} disabled={!pronto || enviando} onPress={() => void enviar()} />
           <Button title="Cancelar" outline disabled={enviando} onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)/mapa')} />
         </>}
       </ScrollView>

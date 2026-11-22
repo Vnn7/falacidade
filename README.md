@@ -22,9 +22,11 @@ O mapa nativo usa coordenadas reais; a versão web direciona para a lista em vez
 
 ## Estado da configuração
 
-**O projeto Firebase `falacidade-vnn7-n3` está criado, com Firestore Standard na região São Paulo, regras e índice publicados. A leitura do banco real foi validada. A ativação inicial do Authentication no console e o teste autenticado na nuvem ainda estão pendentes.**
+**O projeto Firebase `falacidade-vnn7-n3` está configurado, com Firestore Standard na região São Paulo, regras e índice publicados e login Google/e-mail habilitados. O fluxo de criação de conta por e-mail e gravação de dois reportes no banco real foi validado pelo aplicativo.**
 
 O `.env` deste computador já aponta para esse projeto. Em outra máquina, preencha o arquivo com a configuração do aplicativo Web disponível no console. A `.firebaserc` identifica o projeto usado nesta entrega.
+
+Os dois registros existentes estão identificados como **demonstração acadêmica**, com coordenadas simuladas. Veja [a evidência da validação real](docs/VALIDACAO_FIREBASE_REAL.md).
 
 Sem `.env`, o app abre em modo visitante e informa a configuração pendente. Não simula autenticação nem confirma gravações inexistentes. Os testes não exigem uma conta Firebase e não escrevem na nuvem.
 

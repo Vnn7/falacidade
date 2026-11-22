@@ -2,7 +2,7 @@
 
 Esta configuração precisa ser feita na conta Google do responsável. Não envie senhas, tokens administrativos ou chaves de service account para o repositório.
 
-**Estado desta entrega:** o projeto `falacidade-vnn7-n3`, o aplicativo Web, o Firestore em `southamerica-east1` e as regras/índice já foram criados. O `.env` local já foi preenchido. Continue pela ativação de **Authentication** no console; as instruções de criação abaixo servem para reproduzir a configuração em outro projeto.
+**Estado desta entrega:** o projeto `falacidade-vnn7-n3`, o aplicativo Web, o Firestore em `southamerica-east1`, as regras/índice e os provedores Google/e-mail já estão configurados. O `.env` local já foi preenchido. O app criou uma conta por e-mail e dois reportes de demonstração no banco real. As instruções abaixo servem para reproduzir a configuração em outro projeto ou preparar outro computador.
 
 ## 1. Criar projeto, aplicativo e banco
 
