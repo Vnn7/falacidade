@@ -27,7 +27,11 @@ O provedor Google está habilitado no projeto. O teste automatizado acima usou e
 
 Em **22/11/2026**, o responsável também abriu o aplicativo em seu Xiaomi físico com Expo Go compatível com SDK 54. A captura enviada confirmou o mapa Google com ruas, a posição atual indicada em azul, o nome da cidade obtido pela localização e a contagem dos dois reportes do Firestore no modo visitante.
 
-Os reportes de demonstração ficam nas coordenadas simuladas de Cuiabá; eles não aparecem no trecho do mapa de outra cidade. O responsável moveu o mapa até Cuiabá e enviou outra captura, confirmando os dois pinos vermelhos dos documentos com status `aberto`, junto da contagem de dois reportes. Nenhum documento novo foi criado nessa etapa. O envio pelo Android ainda precisa ser conferido. O teste no aparelho foi acompanhado pelo responsável; não é um resultado de emulador. As capturas recebidas na conversa não foram incluídas no repositório.
+Os reportes de demonstração ficam nas coordenadas simuladas de Cuiabá; eles não aparecem no trecho do mapa de outra cidade. O responsável moveu o mapa até Cuiabá e enviou outra captura, confirmando os dois pinos vermelhos dos documentos com status `aberto`, junto da contagem de dois reportes. Nenhum documento novo foi criado nessa primeira etapa.
+
+Em seguida, o responsável enviou um novo reporte pelo Android. A consulta à API do Firestore confirmou um terceiro documento, criado em **22/11/2026 às 15:49:07 (Cuiabá)**, com título, autor autenticado, coordenadas e status `aberto`. O responsável também confirmou que o novo reporte apareceu ao voltar ao mapa, sem fechar nem reiniciar o aplicativo.
+
+O teste no aparelho foi acompanhado pelo responsável; não é um resultado de emulador. As capturas recebidas na conversa e os dados pessoais do novo reporte não foram incluídos no repositório.
 
 O navegador mostra a lista e informa que o mapa está disponível no Android/iOS. Não foi realizado teste em iOS.
 

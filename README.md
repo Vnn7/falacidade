@@ -26,7 +26,7 @@ O mapa nativo usa coordenadas reais; a versão web direciona para a lista em vez
 
 O `.env` deste computador já aponta para esse projeto. Em outra máquina, preencha o arquivo com a configuração do aplicativo Web disponível no console. A `.firebaserc` identifica o projeto usado nesta entrega.
 
-Os dois registros existentes estão identificados como **demonstração acadêmica**, com coordenadas simuladas. Veja [a evidência da validação real](docs/VALIDACAO_FIREBASE_REAL.md).
+Os dois registros iniciais estão identificados como **demonstração acadêmica**, com coordenadas simuladas. Um terceiro reporte foi enviado pelo responsável no Android físico; mapa, GPS, pinos e atualização ao retornar também foram conferidos nesse aparelho. Veja [a evidência da validação real](docs/VALIDACAO_FIREBASE_REAL.md).
 
 Sem `.env`, o app abre em modo visitante e informa a configuração pendente. Não simula autenticação nem confirma gravações inexistentes. Os testes não exigem uma conta Firebase e não escrevem na nuvem.
 
