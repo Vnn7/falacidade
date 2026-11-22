@@ -6,7 +6,7 @@ import { mensagemDoErro } from '@/services/erros';
 import type { Ocorrencia } from '@/types/ocorrencia';
 import type { Coordenadas } from '@/context/cidade-context';
 
-/** Busca ao voltar à tela e descarta respostas antigas após sair ou trocar de filtro. */
+/** Aqui eu junto a busca dos reportes com os avisos de carregamento e de erro da tela. */
 export function useOcorrencias(_coordenadas?: Coordenadas | null, idNotificante?: string) {
   const [ocorrencias, setOcorrencias] = useState<Ocorrencia[]>([]);
   const [carregando, setCarregando] = useState(false);
@@ -16,6 +16,7 @@ export function useOcorrencias(_coordenadas?: Coordenadas | null, idNotificante?
 
   const recarregar = useCallback(async () => {
     if (!focada.current) return;
+    // Eu marco cada busca para não mostrar uma resposta antiga depois de uma busca mais nova.
     const atual = ++geracao.current;
     if (!firebaseConfigurado) {
       setOcorrencias([]);
@@ -26,7 +27,7 @@ export function useOcorrencias(_coordenadas?: Coordenadas | null, idNotificante?
     setCarregando(true);
     setErro(null);
     try {
-      // A lista pode ser consultada sem GPS: localização é obrigatória só ao criar.
+      // Eu deixo consultar a lista sem GPS. A posição é necessária quando vou criar um reporte.
       const lista = await buscarOcorrencias(null, idNotificante);
       if (atual === geracao.current) setOcorrencias(lista);
     } catch (falha) {
@@ -36,10 +37,13 @@ export function useOcorrencias(_coordenadas?: Coordenadas | null, idNotificante?
     }
   }, [idNotificante]);
 
+  // Eu uso useFocusEffect para buscar de novo sempre que volto para esta tela.
+  // Assim, o reporte que acabei de criar aparece sem precisar fechar o aplicativo.
   useFocusEffect(useCallback(() => {
     focada.current = true;
     setOcorrencias([]);
     void recarregar();
+    // Ao sair da tela, eu paro de aproveitar as respostas das buscas anteriores.
     return () => { focada.current = false; geracao.current += 1; };
   }, [recarregar]));
   return { ocorrencias, carregando, erro, recarregar };

@@ -2,7 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{banco}/documents {
     match /ocorrencias/{idOcorrencia} {
-      // Os reportes são públicos. Criação exige o uid da própria sessão.
+      // Eu deixo qualquer pessoa consultar os reportes.
+      // Para salvar, eu exijo login e confiro se o autor é o dono da conta que está entrando.
       allow read: if true;
       allow create: if request.auth != null
         && request.resource.data.keys().hasAll([
@@ -29,7 +30,7 @@ service cloud.firestore {
         && (request.resource.data.endereco == null
           || (request.resource.data.endereco is string && request.resource.data.endereco.size() <= 500))
         && request.resource.data.criadoEm == request.time;
-      // Alterar e excluir não fazem parte dos desafios e permanecem bloqueados.
+      // Nesta atividade eu trabalho com criar e consultar. Por isso, não libero editar ou apagar.
       allow update, delete: if false;
     }
   }

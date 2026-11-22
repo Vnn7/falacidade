@@ -14,13 +14,15 @@ export function CidadeProvider({ children }: { children: ReactNode }) {
     setStatus('carregando');
     setCoordenadas(null);
     try {
+      // Primeiro eu peço autorização para usar a localização do aparelho.
       const permissao = await Location.requestForegroundPermissionsAsync();
       if (permissao.status !== 'granted') { setStatus('negado'); return; }
+      // Depois eu pego a posição atual e guardo a latitude e a longitude.
       const posicao = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
       const aqui = { latitude: posicao.coords.latitude, longitude: posicao.coords.longitude };
       setCoordenadas(aqui);
       setStatus('pronto');
-      // O nome da cidade é opcional; falha no endereço não invalida o GPS.
+      // Eu também tento pegar o nome da cidade, mas o GPS funciona mesmo sem esse nome.
       try {
         const [local] = await Location.reverseGeocodeAsync(aqui);
         setCidade(local?.city ?? local?.subregion ?? null);

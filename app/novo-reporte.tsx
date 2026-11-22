@@ -16,6 +16,7 @@ import type { TipoReporte } from '@/types/ocorrencia';
 export default function NovoReporte() {
   const { user, pronto } = useAuth();
   const { coordenadas, status, atualizar } = useCidade();
+  // Eu guardo aqui o que foi digitado e o tipo de problema escolhido no formulário.
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [tipo, setTipo] = useState<TipoReporte>('buraco');
@@ -26,21 +27,25 @@ export default function NovoReporte() {
   const bloqueado = useRef(false);
 
   async function enviar() {
+    // Eu espero o login terminar e evito repetir um envio que já está acontecendo.
     if (!pronto || bloqueado.current || enviado) return;
     setErro(null);
+    // Eu só continuo se houver título, usuário logado e posição do aparelho.
     if (!titulo.trim()) { setErro('Título obrigatório. Diga onde está o problema.'); return; }
     if (!user) { setErro('Login necessário. Entre na sua conta para reportar.'); return; }
     if (!coordenadas) { setErro('Localização indisponível. Ative a localização do aparelho.'); return; }
-    // A ref bloqueia dois toques no mesmo instante, antes do React redesenhar o botão.
+    // Eu bloqueio o botão para dois toques rápidos não criarem o mesmo reporte duas vezes.
     bloqueado.current = true; setEnviando(true);
     try {
       let endereco: string | null = null;
       try {
-        // Extra: o endereço é útil, mas uma falha neste serviço não perde o reporte.
+        // Extra: eu tento descobrir o endereço a partir da latitude e da longitude.
+        // Se isso falhar, eu ainda salvo o reporte com as coordenadas.
         const [local] = await Location.reverseGeocodeAsync(coordenadas);
         if (local) endereco = [local.street, local.streetNumber, local.district,
           local.city ?? local.subregion, local.region].filter(Boolean).join(', ') || null;
-      } catch { /* O GPS continua válido mesmo sem endereço legível. */ }
+      } catch { /* Eu continuo com o GPS mesmo se não encontrar o nome da rua. */ }
+      // Eu mando os dados para o serviço, que é a parte responsável por gravar no banco.
       await criarReporte({
         idNotificante: user.uid, titulo, descricao, tipo,
         latitude: coordenadas.latitude, longitude: coordenadas.longitude, endereco,
@@ -48,6 +53,7 @@ export default function NovoReporte() {
       setSemEndereco(!endereco);
       setEnviado(true);
     } catch (falha) { setErro(mensagemDoErro(falha)); }
+    // Depois da tentativa, eu retiro o indicador de envio, mesmo se tiver ocorrido um erro.
     finally { bloqueado.current = false; setEnviando(false); }
   }
 
@@ -78,6 +84,7 @@ export default function NovoReporte() {
           <TextInput accessibilityLabel="Título do reporte" placeholder="Ex.: Buraco na Rua das Palmeiras"
             value={titulo} onChangeText={setTitulo} maxLength={120} editable={!enviando} style={styles.campo} />
           <SectionTitle>Tipo de problema</SectionTitle>
+          {/* Extra: eu uso estes botões para escolher a categoria que será salva no reporte. */}
           <View style={styles.tipos}>
             {(Object.keys(TIPOS) as TipoReporte[]).map((chave) => <Pill key={chave} text={TIPOS[chave]} active={tipo === chave}
               onPress={() => { if (!enviando) setTipo(chave); }} />)}
@@ -91,6 +98,7 @@ export default function NovoReporte() {
             : status === 'carregando' ? 'Buscando localização...' : 'Localização indisponível.'}</Text>
           {!coordenadas && <Button title="Buscar localização" outline disabled={enviando || status === 'carregando'} onPress={() => void atualizar()} />}
           {erro && <Text accessibilityRole="alert" style={styles.erro}>{erro}</Text>}
+          {/* Extra: eu mostro o indicador para a pessoa saber que o envio está acontecendo. */}
           {enviando && <ActivityIndicator accessibilityLabel="Enviando reporte" color={Colors.green} />}
           <Button title={enviando ? 'Enviando...' : 'Enviar reporte'} disabled={!pronto || enviando} onPress={() => void enviar()} />
           <Button title="Cancelar" outline disabled={enviando} onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)/mapa')} />

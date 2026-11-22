@@ -32,8 +32,9 @@ function iniciarAuth(): Auth | null {
   }
 }
 
+// Eu uso auth para saber quem entrou na conta.
 export const auth = iniciarAuth();
-// Desafio 1: o mesmo banco é usado pelos serviços de escrita e consulta.
+// Desafio 1: eu preparo o Firestore aqui para usar o mesmo banco ao salvar e ao consultar.
 export const bancoDeDados = app ? getFirestore(app) : null;
 
 // Usado apenas quando o teste/demo solicita explicitamente um projeto local demo-*.

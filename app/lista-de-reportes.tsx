@@ -12,6 +12,7 @@ import { useOcorrencias } from '@/hooks/use-ocorrencias';
 export default function ListaDeReportes() {
   const { meus } = useLocalSearchParams<{ meus?: string }>();
   const { user } = useAuth();
+  // Extra: eu guardo se a pessoa quer ver todos os reportes ou apenas os dela.
   const [soMeus, setSoMeus] = useState(meus === '1');
   const semLogin = soMeus && !user;
   const { ocorrencias, carregando, erro, recarregar } = useOcorrencias(null, soMeus ? user?.uid : undefined);
@@ -32,6 +33,8 @@ export default function ListaDeReportes() {
       <Button title="Ir para login" onPress={() => router.push('/(tabs)')} /></View> : <>
       {erro && <View style={styles.aviso}><Text accessibilityRole="alert" style={styles.erro}>{erro}</Text>
         <Button title="Tentar novamente" outline onPress={() => void recarregar()} /></View>}
+      {/* Eu uso FlatList para montar um cartão para cada reporte recebido do Firebase.
+          Extra: com RefreshControl, eu posso puxar a lista para buscar os dados de novo. */}
       <FlatList data={ocorrencias} keyExtractor={(item) => item.id} contentContainerStyle={styles.lista}
         refreshControl={<RefreshControl refreshing={carregando} onRefresh={() => void recarregar()} tintColor={Colors.green} />}
         ListEmptyComponent={carregando ? <ActivityIndicator color={Colors.green} /> : !erro ? <Text style={styles.vazio}>Nenhum reporte ainda.</Text> : null}
@@ -43,6 +46,7 @@ export default function ListaDeReportes() {
             {item.descricao && <Text style={styles.texto}>{item.descricao}</Text>}
             {item.endereco && <Text style={styles.texto}>{item.endereco}</Text>}
             <Text style={{ color: STATUS[item.status].cor, fontWeight: '700' }}>{STATUS[item.status].rotulo} · {TIPOS[item.tipo]}</Text>
+            {/* Extra: eu mostro a data e a hora no formato usado no Brasil. */}
             <Text style={styles.data}>{item.criadoEm ? item.criadoEm.toLocaleString('pt-BR') : 'Data não informada'}</Text>
           </View><Ionicons name="chevron-forward" size={20} color={Colors.faint} />
         </Pressable>} />
