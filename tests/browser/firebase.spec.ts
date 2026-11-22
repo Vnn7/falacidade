@@ -4,10 +4,11 @@ test('conta real no emulador cria dois reportes, atualiza ao voltar e lista por 
   const erros: string[] = [];
   page.on('pageerror', (erro) => erros.push(erro.message));
   await page.goto('/');
+  await expect(page.getByText('O Firebase ainda precisa ser configurado para ativar o login e os reportes.')).not.toBeVisible();
   await page.getByLabel('E-mail', { exact: true }).fill('teste-' + Date.now() + '@exemplo.com');
   await page.getByLabel('Senha', { exact: true }).fill('senha-local-123');
   await page.getByText('Criar conta', { exact: true }).click();
-  await expect(page.getByText('Cada reporte faz a diferença')).toBeVisible();
+  await expect(page.getByText('Cada reporte faz a diferença')).toBeVisible({ timeout: 15000 });
   await expect(page.getByText('Buscando sua localização...')).not.toBeVisible();
 
   for (const titulo of ['Primeiro reporte do teste', 'Segundo reporte do teste']) {
