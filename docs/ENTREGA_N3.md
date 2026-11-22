@@ -34,7 +34,7 @@ A rota antiga `/reporte` redireciona o código para o mesmo formulário novo. O 
 - 1 teste completo no navegador com Authentication e Firestore emulados: criação de conta, dois reportes, persistência, ordenação, filtro e detalhe.
 - Empacotamento para web e Android.
 - Validação pelo aplicativo com o Firebase real: criação de conta por e-mail, dois reportes, sessão após recarregar, ordenação, filtro, atualização e detalhe. [Evidência](VALIDACAO_FIREBASE_REAL.md).
-- Android físico do responsável: mapa com ruas, localização atual, nome da cidade e contagem dos reportes confirmados por captura enviada na conversa.
+- Android físico do responsável: mapa com ruas, localização atual, nome da cidade, contagem dos reportes e dois pinos vermelhos dos registros de demonstração confirmados por capturas enviadas na conversa.
 
 O emulador não exige acesso à conta Google. Os testes de recusa geram mensagens `PERMISSION_DENIED` esperadas; a execução deve terminar com todos os testes aprovados.
 
@@ -45,7 +45,7 @@ O código está publicado na branch `main` de [Vnn7/falacidade](https://github.c
 O Firebase `falacidade-vnn7-n3` e o Firestore de São Paulo estão criados, com regras/índice publicados. Google e e-mail/senha estão habilitados. O `.env` local está preenchido e dois reportes de demonstração foram gravados pelo próprio aplicativo na nuvem.
 
 - Ao clonar em outro computador, preencher o `.env` com o app cadastrado.
-- Conferir um pino e um envio no Android físico. O mapa e o GPS já foram observados no aparelho; os dois reportes de demonstração ficam em Cuiabá, fora do trecho exibido na captura. O login Google foi confirmado pelo responsável no navegador.
+- Conferir um envio no Android físico. O mapa, o GPS e os dois pinos dos reportes de demonstração já foram observados no aparelho. O login Google foi confirmado pelo responsável no navegador.
 - Conferir o link público com os commits e preencher o formulário com nome completo e link.
 
 Os comentários dos desafios e extras foram revisados em linguagem simples, em primeira pessoa, explicando a função de cada trecho. Eles servem também como apoio para estudar o funcionamento do aplicativo. Os extras foram implementados; a nota depende da avaliação do professor.
