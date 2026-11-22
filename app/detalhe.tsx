@@ -1,68 +1,50 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card, Field, LoginStatus, SectionTitle } from '@/components/AppComponents';
+import { Button, Card } from '@/components/AppComponents';
+import { STATUS, TIPOS } from '@/constants/status';
 import { Colors } from '@/constants/theme';
+import { buscarOcorrencia } from '@/services/ocorrencias';
+import { mensagemDoErro } from '@/services/erros';
+import type { Ocorrencia } from '@/types/ocorrencia';
 
 export default function DetalheScreen() {
-  const params = useLocalSearchParams<{ id?: string; endereco?: string; status?: string; severidade?: string }>();
-
-  return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
-        <Pressable style={styles.iconButton} onPress={() => router.back()}><Ionicons name="chevron-back" size={22} color={Colors.muted} /></Pressable>
-        <Text style={styles.title}>Ocorrência #{params.id ?? 'A1B2'}</Text>
-        <Ionicons name="flag-outline" size={20} color={Colors.muted} />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <LoginStatus />
-        <View style={styles.photo}><Ionicons name="image-outline" size={40} color={Colors.white} /><Text style={styles.photoLabel}>Foto 1/3 — buraco</Text></View>
-        <View style={styles.statusRow}>
-          <View style={styles.badge}><Text style={styles.badgeText}>{params.status ?? 'Em execução'}</Text></View>
-          <Text style={styles.opened}>Severidade: {params.severidade ?? 'Moderado'}</Text>
-        </View>
-
-        <Field icon="location-outline" placeholder={params.endereco ?? 'Rua das Palmeiras, 245 — Secretaria de Obras'} />
-        <SectionTitle>Histórico</SectionTitle>
-        <History title="Prefeitura iniciou a execução — 12/08" text="Equipe agendada para esta semana." />
-        <History title="Prefeitura reconheceu a ocorrência — 09/08" />
-        <History title="Você reportou — 07/08" />
-
-        <View style={styles.actions}>
-          <Button title="Apoiar (34)" icon="heart-outline" outline onPress={() => {}} style={{ flex: 1 }} />
-          <Button title="Comentar" icon="chatbubble-outline" outline onPress={() => {}} style={{ flex: 1 }} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const [ocorrencia, setOcorrencia] = useState<Ocorrencia | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  useFocusEffect(useCallback(() => {
+    let ativo = true;
+    setCarregando(true); setErro(null); setOcorrencia(null);
+    if (!id) { setErro('Reporte não informado.'); setCarregando(false); return; }
+    buscarOcorrencia(id).then((item) => {
+      if (ativo) { setOcorrencia(item); if (!item) setErro('Reporte não encontrado.'); }
+    }).catch((falha) => { if (ativo) setErro(mensagemDoErro(falha)); })
+      .finally(() => { if (ativo) setCarregando(false); });
+    return () => { ativo = false; };
+  }, [id]));
+  return <SafeAreaView style={styles.safe}>
+    <ScrollView contentContainerStyle={styles.content}>
+      <Button title="Voltar" outline onPress={() => router.canGoBack() ? router.back() : router.replace('/lista-de-reportes')} />
+      {carregando && <ActivityIndicator color={Colors.green} />}
+      {erro && <Text accessibilityRole="alert" style={{ color: Colors.red }}>{erro}</Text>}
+      {ocorrencia && <Card>
+        <Text style={styles.titulo}>{ocorrencia.titulo}</Text>
+        <Text style={[styles.texto, { color: STATUS[ocorrencia.status].cor, fontWeight: '700' }]}>{STATUS[ocorrencia.status].rotulo}</Text>
+        <Text style={styles.texto}>{TIPOS[ocorrencia.tipo]}</Text>
+        {ocorrencia.descricao && <Text style={styles.texto}>{ocorrencia.descricao}</Text>}
+        {ocorrencia.endereco && <Text style={styles.texto}>{ocorrencia.endereco}</Text>}
+        <Text style={styles.texto}>Latitude: {ocorrencia.latitude.toFixed(6)} · Longitude: {ocorrencia.longitude.toFixed(6)}</Text>
+        <Text style={styles.texto}>{ocorrencia.criadoEm?.toLocaleString('pt-BR') || 'Data não informada'}</Text>
+        <Text style={styles.id}>Identificador: {ocorrencia.id}</Text>
+      </Card>}
+    </ScrollView>
+  </SafeAreaView>;
 }
-
-function History({ title, text }: { title: string; text?: string }) {
-  return (
-    <Card style={styles.history}>
-      <View style={styles.timelineDot} />
-      <View style={{ flex: 1 }}><Text style={styles.historyTitle}>{title}</Text>{text ? <Text style={styles.historyText}>{text}</Text> : null}</View>
-    </Card>
-  );
-}
-
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  header: { minHeight: 60, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: Colors.white, borderBottomWidth: 1, borderBottomColor: Colors.border },
-  iconButton: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  title: { flex: 1, color: Colors.text, fontSize: 15, fontWeight: '900' },
-  content: { padding: 16, gap: 10, paddingBottom: 28 },
-  photo: { height: 190, borderRadius: 18, backgroundColor: '#aab8c8', alignItems: 'center', justifyContent: 'center' },
-  photoLabel: { position: 'absolute', bottom: 10, alignSelf: 'center', color: Colors.white, fontSize: 10, backgroundColor: 'rgba(0,0,0,.4)', paddingVertical: 4, paddingHorizontal: 10, borderRadius: 999 },
-  statusRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  badge: { backgroundColor: Colors.amber, borderRadius: 7, paddingHorizontal: 9, paddingVertical: 5 },
-  badgeText: { color: Colors.white, fontSize: 9.5, fontWeight: '900', textTransform: 'uppercase' },
-  opened: { color: Colors.muted, fontSize: 10.5 },
-  history: { flexDirection: 'row', gap: 9 },
-  timelineDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: Colors.green, marginTop: 3 },
-  historyTitle: { color: Colors.text, fontSize: 11.5, fontWeight: '800' },
-  historyText: { marginTop: 3, color: Colors.muted, fontSize: 10.5 },
-  actions: { flexDirection: 'row', gap: 8, marginTop: 2 }
+  safe: { flex: 1, backgroundColor: Colors.background }, content: { padding: 20, gap: 16 },
+  titulo: { color: Colors.text, fontSize: 24, fontWeight: '800' },
+  texto: { color: Colors.muted, fontSize: 15, lineHeight: 22, marginTop: 12 },
+  id: { color: Colors.faint, fontSize: 12, marginTop: 16 },
 });

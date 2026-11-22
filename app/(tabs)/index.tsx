@@ -1,105 +1,59 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, LoginStatus } from '@/components/AppComponents';
 import { useAuth } from '@/components/AuthContext';
 import { Colors } from '@/constants/theme';
+import { firebaseConfigurado } from '@/firebase-config';
+import { mensagemDoErro } from '@/services/erros';
 
 export default function LoginScreen() {
-  const { entrar, visitante } = useAuth();
-
-  function fazerLogin() {
-    entrar();
-    router.replace({
-      pathname: '/(tabs)/mapa',
-      params: { login: '1' }
-    });
+  const { entrar, entrarEmail, visitante, pronto, user } = useAuth();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [ocupado, setOcupado] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+  async function executar(acao: () => Promise<void>) {
+    if (ocupado) return;
+    setOcupado(true); setErro(null);
+    try { await acao(); router.replace('/(tabs)/mapa'); }
+    catch (falha) { setErro(mensagemDoErro(falha)); }
+    finally { setOcupado(false); }
   }
-
-  function entrarSemLogin() {
-    visitante();
-    router.replace({
-      pathname: '/(tabs)/mapa',
-      params: { login: '0' }
-    });
-  }
-
-  return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>FB</Text>
-        </View>
-
-        <Text style={styles.title}>Falaa Buraco!!</Text>
-        <Text style={styles.subtitle}>
-          Reporte, acompanhe e confirme a correção de buracos na sua cidade.
-        </Text>
-
-        <LoginStatus />
-
-        <Button
-          title="Entrar com Google"
-          icon="logo-google"
-          onPress={fazerLogin}
-          style={styles.loginButton}
-        />
-
-        <Text style={styles.legal}>
-          Ao continuar, você concorda com os Termos e a Política de Privacidade (LGPD).
-        </Text>
-
-        <Pressable style={styles.guest} onPress={entrarSemLogin}>
-          <Text style={styles.guestText}>Ver mapa sem login</Text>
-          <Ionicons name="chevron-forward" size={15} color={Colors.green} />
-        </Pressable>
-      </View>
-    </SafeAreaView>
-  );
+  return <SafeAreaView style={styles.safe}>
+    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <View style={styles.logo}><Text style={styles.logoText}>FB</Text></View>
+      <Text style={styles.title}>Falaa Buraco!!</Text>
+      <Text style={styles.subtitle}>Sua cidade melhora quando você participa. Reporte e acompanhe problemas perto de você.</Text>
+      <LoginStatus />
+      {!firebaseConfigurado && <Text style={styles.aviso}>O Firebase ainda precisa ser configurado para ativar o login e os reportes.</Text>}
+      {erro && <Text accessibilityRole="alert" style={styles.erro}>{erro}</Text>}
+      {ocupado || !pronto ? <ActivityIndicator color={Colors.green} /> : null}
+      {user && <Button title="Continuar no mapa" onPress={() => router.replace('/(tabs)/mapa')} />}
+      <Button title="Entrar com Google" icon="logo-google" disabled={ocupado || !pronto || !firebaseConfigurado} onPress={() => void executar(entrar)} />
+      <Text style={styles.subtitle}>Ou use sua conta de e-mail</Text>
+      <TextInput accessibilityLabel="E-mail" placeholder="E-mail" value={email} onChangeText={setEmail}
+        autoCapitalize="none" keyboardType="email-address" autoComplete="email" style={styles.campo} />
+      <TextInput accessibilityLabel="Senha" placeholder="Senha (mínimo 6 caracteres)" value={senha} onChangeText={setSenha}
+        secureTextEntry autoComplete="current-password" style={styles.campo} />
+      <Button title="Entrar" disabled={ocupado || !pronto || !firebaseConfigurado || !email.trim() || !senha}
+        onPress={() => void executar(() => entrarEmail(email, senha))} />
+      <Button title="Criar conta" outline disabled={ocupado || !pronto || !firebaseConfigurado || !email.trim() || senha.length < 6}
+        onPress={() => void executar(() => entrarEmail(email, senha, true))} />
+      <Button title="Ver mapa sem login" outline disabled={ocupado || !pronto} onPress={() => void executar(visitante)} />
+      <Text style={styles.legal}>A localização é usada para posicionar seus reportes. Títulos, descrições e locais ficam visíveis aos visitantes; evite incluir informações pessoais.</Text>
+    </ScrollView>
+  </SafeAreaView>;
 }
-
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32
-  },
-  logo: {
-    width: 70,
-    height: 70,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.green
-  },
+  container: { flexGrow: 1, justifyContent: 'center', alignSelf: 'center', width: '100%', maxWidth: 440, padding: 28, gap: 12 },
+  logo: { width: 70, height: 70, alignSelf: 'center', borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.green },
   logoText: { color: Colors.white, fontSize: 24, fontWeight: '900' },
-  title: { marginTop: 17, color: Colors.text, fontSize: 23, fontWeight: '900' },
-  subtitle: {
-    maxWidth: 290,
-    marginTop: 8,
-    color: Colors.muted,
-    textAlign: 'center',
-    fontSize: 13,
-    lineHeight: 19
-  },
-  loginButton: { width: '100%', maxWidth: 300, marginTop: 16 },
-  legal: {
-    maxWidth: 270,
-    marginTop: 13,
-    color: Colors.faint,
-    textAlign: 'center',
-    fontSize: 10,
-    lineHeight: 15
-  },
-  guest: {
-    marginTop: 17,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4
-  },
-  guestText: { color: Colors.green, fontSize: 12, fontWeight: '700' }
+  title: { color: Colors.text, fontSize: 26, fontWeight: '900', textAlign: 'center' },
+  subtitle: { color: Colors.muted, textAlign: 'center', fontSize: 14, lineHeight: 20 },
+  campo: { backgroundColor: Colors.white, color: Colors.text, borderWidth: 1, borderColor: Colors.border, padding: 14, borderRadius: 12, fontSize: 15 },
+  erro: { color: Colors.red, lineHeight: 20 }, aviso: { color: Colors.amber, lineHeight: 20 },
+  legal: { color: Colors.muted, fontSize: 12, lineHeight: 18, textAlign: 'center' },
 });

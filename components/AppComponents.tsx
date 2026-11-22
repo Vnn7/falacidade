@@ -18,7 +18,7 @@ export function LoginStatus() {
     <View style={[styles.loginStatus, login === 1 ? styles.loginOn : styles.loginOff]}>
       <View style={[styles.loginDot, { backgroundColor: login === 1 ? Colors.green : Colors.red }]} />
       <Text style={styles.loginText}>
-        {login === 1 ? 'Usuário logado' : 'Usuário não logado'} · login = {login}
+        {login === 1 ? 'Usuário logado' : 'Navegando como visitante'}
       </Text>
     </View>
   );

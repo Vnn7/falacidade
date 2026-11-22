@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{banco}/documents {
+    match /ocorrencias/{idOcorrencia} {
+      // Os reportes são públicos. Criação exige o uid da própria sessão.
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll([
+          'idNotificante', 'titulo', 'descricao', 'status', 'tipo',
+          'latitude', 'longitude', 'endereco', 'criadoEm'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'idNotificante', 'titulo', 'descricao', 'status', 'tipo',
+          'latitude', 'longitude', 'endereco', 'criadoEm'
+        ])
+        && request.resource.data.idNotificante == request.auth.uid
+        && request.resource.data.titulo is string
+        && request.resource.data.titulo.size() > 0
+        && request.resource.data.titulo.size() <= 120
+        && request.resource.data.titulo.matches('.*[^\\s].*')
+        && (request.resource.data.descricao == null
+          || (request.resource.data.descricao is string && request.resource.data.descricao.size() <= 2000))
+        && request.resource.data.status == 'aberto'
+        && request.resource.data.tipo in ['buraco', 'calcada', 'iluminacao', 'outro']
+        && request.resource.data.latitude is number
+        && request.resource.data.latitude >= -90 && request.resource.data.latitude <= 90
+        && request.resource.data.longitude is number
+        && request.resource.data.longitude >= -180 && request.resource.data.longitude <= 180
+        && (request.resource.data.endereco == null
+          || (request.resource.data.endereco is string && request.resource.data.endereco.size() <= 500))
+        && request.resource.data.criadoEm == request.time;
+      // Alterar e excluir não fazem parte dos desafios e permanecem bloqueados.
+      allow update, delete: if false;
+    }
+  }
+}
